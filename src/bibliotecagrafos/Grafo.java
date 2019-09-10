@@ -47,6 +47,11 @@ public class Grafo {
         if(!dirigido) (listaAjacencia.get(nodo2)).add(nodo1);
         
     }
+    
+    /*
+    Este metodo revisa si existe una arista entre el nodo1 y nodo2
+    retorna true si existe, false en caso contrario 
+    */
     public boolean checkArista(int nodo1, int nodo2 ){
         //obtenemos la lista de  nodos con  los que esta conectado el nodo1 
         // y revisamos si tiene conexion con el nodo 2
@@ -58,13 +63,24 @@ public class Grafo {
         return false;
     }
     
+    /*
+    Genera un numero entero aleatorio entre 0 y n -1
+    */
     public int getRandomNum(int n){
         return ThreadLocalRandom.current().nextInt( 0, n );
     }
+    
+    /*
+    Genera un numero decimal  aleatorio entre 0 y 1
+    */
     public double getRandomFloat(){
         return Math.random();
 
     }
+   
+    /*
+    Este metodo imprime la lista de adjacencia del grafo
+    */
     public void print(){
         for(int i=0;i<listaAjacencia.size();i++){
             System.out.print(i+ ": ");
@@ -74,7 +90,9 @@ public class Grafo {
             System.out.println("");
         }
     }
-    
+    /*
+    Metodo de generacion de grafo genErdosRenyi
+    */
     public static Grafo genErdosRenyi(int n, int m, boolean dirigido, boolean auto){
         Grafo g = new Grafo(n,m, dirigido);
         /*
@@ -96,11 +114,14 @@ public class Grafo {
         return g;
     }
     
-    
-    
+    /*
+    Metodo de generacion de grafo genGilbert
+    */
     public static Grafo genGilbert(int n, double p, boolean dirigido, boolean auto){
         Grafo g = new Grafo(n,0, dirigido);
-        System.out.println(g.listaAjacencia.size());
+        
+        /*checo las n*n combinaciones de nodos y veo si puedo crear una arista probabilis
+        ticamente*/
         for(int i = 0; i < n; i++){
           for(int j = 0; j < n; j++){
               
@@ -116,6 +137,9 @@ public class Grafo {
     
     
     
+    /*
+    Metodo de generacion de grafo genBarabasiAlbert
+    */
     
     public static Grafo genBarabasiAlbert(int n, double d, boolean dirigido, boolean auto){
         Grafo g = new Grafo(n, 0, dirigido);
@@ -127,7 +151,10 @@ public class Grafo {
                 g.addArista(i, j);
             }
         }
-        
+        /*
+        Luego para los vertices restantes checo para los nodos anteriores
+        si puedo conectarlos o no dependiendo de su grado
+        */
         for(int i = D; i < n; i++ ){           
             for(int j = 0; j < i ; j++){
                 int gradoNodo = g.listaAjacencia.get(j).size();
@@ -141,10 +168,13 @@ public class Grafo {
         return g;
     }
    
+    /*
+    Metodo de generacion de grafo genGeografico
+    */
     public static Grafo genGeografico(int n, double r, boolean dirigido, boolean auto){
         Grafo g = new Grafo(n,0,dirigido);
         
-        
+        //primero genero pares (x,y) entre 0 y 1 para cada uno de los nodos
         for(int i = 0; i < n ; i++){
             double x = g.getRandomFloat();
             double y = g.getRandomFloat();
@@ -152,6 +182,8 @@ public class Grafo {
             
         }
         
+        // calculo  la distancia entre el nodo contra todos los nodos del grafo
+        // si la distancia es menor o igual a r genero arista
         for(int i = 0; i < n; i++){
             for(int j = 0; j < n ; j++){
                 if(i == j && !auto) continue;
@@ -171,7 +203,9 @@ public class Grafo {
         
     }
     
-  
+    /*
+    Exporta el grafo en formato csv
+    */
     public  void exportGraph(String nameFile)
     {
         try(Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nameFile +".csv"), "UTF-8")))
