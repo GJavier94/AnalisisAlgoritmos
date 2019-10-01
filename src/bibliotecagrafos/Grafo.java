@@ -2,8 +2,7 @@ package bibliotecagrafos;
 
 import java.io.*;
 import java.util.concurrent.ThreadLocalRandom;
-
-import java.util.ArrayList;
+import java.util.*; 
 
 class Pair{
     double x,y;
@@ -20,9 +19,18 @@ public class Grafo {
     int numNodos; // numero de nodos que tiene el grafo 
     int numAristas; // numero de aristas que tiene el grafo 
     boolean dirigido;  //Indica  si el grafo es dirigido o no lo es  es decir que para cada para u.v vemos si u-v y v-u
+    
+    static final int UNVISITED = -1;
+    static final int VISITED = 1;
+    
+    
     ArrayList<ArrayList<Integer>> listaAjacencia = new ArrayList<>();
     
     ArrayList<Pair> coordinates = new ArrayList<>();
+    
+    ArrayList<Integer> dfs_num = new ArrayList<Integer>();
+    
+    
     
     public Grafo(int numNodos, int numAristas, boolean dirigido) {
         this.numNodos = numNodos;
@@ -32,6 +40,8 @@ public class Grafo {
           
             listaAjacencia.add(new ArrayList<>());
         }
+        //inicializando arreglo utilzado para marcar los visitados en DFS 
+        for(int i = 0; i < numNodos; i++) dfs_num.add(UNVISITED);
     }
     
     /*
@@ -201,6 +211,75 @@ public class Grafo {
         
         return g;
         
+    }
+    
+    public Grafo BFS(int u ){
+        int n = listaAjacencia.size();
+        Grafo g = new Grafo(n,0,dirigido);
+        int[] dis = new int[n];
+        
+        for(int i = 0; i < listaAjacencia.size(); i++) dis[i] = 1 << 30;
+        Queue<Integer> q = new LinkedList<>(); 
+        q.add(u);
+        dis[u] = 0;
+	
+        while(q.size() > 0 ){
+                u = q.peek();
+                q.poll();
+                for(int i = 0; i < listaAjacencia.get(u).size(); i++){
+                        int v = listaAjacencia.get(u).get(i); 
+                        if( dis[v] >  dis[u] + 1){
+                                dis[v] = dis[u] + 1;
+                                q.add(v);
+                                g.addArista(u, v);
+                        }
+                }
+        }
+        return g;
+    }
+    
+    public Grafo DFS_TREE_R(int u ){
+        int n = listaAjacencia.size();
+        Grafo g = new Grafo(n,0,dirigido);
+        DFS(u, g);
+        dfs_num.clear();
+        for(int i = 0; i < numNodos; i++) dfs_num.add(UNVISITED);
+     
+        return g;
+    }
+    
+    public void DFS(int u, Grafo g ){
+        dfs_num.set(u, VISITED);
+        for(int j = 0; j <  listaAjacencia.get(u).size(); j++){
+                int v = listaAjacencia.get(u).get(j);
+                if(dfs_num.get(v) == UNVISITED){
+                    g.addArista(u, v);
+                    DFS(v,g);
+                }
+        }   
+    }
+    
+    public Grafo DFS_TREE_I(int u ){
+        int n = listaAjacencia.size();
+        Grafo g = new Grafo(n,0,dirigido);
+        Stack<Integer> stack = new Stack<Integer>(); 
+
+        dfs_num.set(u, VISITED);
+        stack.push(u);
+        
+        while(!stack.empty()){
+            u = stack.peek();
+            stack.pop();
+            for(int j = 0; j < listaAjacencia.get(u).size();j++){
+                int v = listaAjacencia.get(u).get(j);
+                if(dfs_num.get(v) == UNVISITED){
+                    g.addArista(u, v);
+                    dfs_num.set(v, VISITED);
+                    stack.push(v);
+                }
+            }
+        }
+        return g;
     }
     
     /*
