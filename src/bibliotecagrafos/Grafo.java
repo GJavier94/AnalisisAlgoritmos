@@ -65,6 +65,12 @@ public class Grafo {
         return false;
     }
     
+     /*
+    Este metodo revisa si existe una arista entre el nodo1 y nodo2
+    retorna el peso w si existe, 0 en caso contrario 
+    */
+   
+    
     public double getWeightArista(int nodo1, int nodo2 ){
               
         ArrayList<Pair> listaNodo1 = adjList.get(nodo1);
@@ -380,7 +386,7 @@ public class Grafo {
     
     
     /*
-    Exporta el grafo en formato csv
+    Exporta el grafo ponderado en formato csv
     */
     public  void exportGraphWeighted(String nameFile)
     {
@@ -406,6 +412,10 @@ public class Grafo {
         }
     }
     
+    
+    /*
+    Exporta el grafo no ponderado en formato csv
+    */
     
     public  void exportGraphUnWeighted(String nameFile){
         try(Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nameFile +".csv"), "UTF-8")))
