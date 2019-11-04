@@ -436,5 +436,30 @@ public class Grafo {
             ex.printStackTrace();
         }
     }
+    
+     /*
+    Exporta el grafo en formato csv
+    */
+    public  void exportGraph(String nameFile)
+    {
+        try(Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nameFile +".csv"), "UTF-8")))
+        {
+           
+           for(int i = 0; i < adjList.size(); i++){
+               
+               writer.write("" + (i));
+               for(int j = 0; j < adjList.get(i).size();j++){
+                   writer.write(";" + (adjList.get(i).get(j)).getId() );
+               }
+               writer.write("\n");
+           }
+         
+            
+        }
+        catch(IOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 
 }
