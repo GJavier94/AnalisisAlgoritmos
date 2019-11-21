@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.*; 
 
 
+
 public class Grafo {
     
     int numNodos; // numero de nodos
@@ -21,8 +22,8 @@ public class Grafo {
     ArrayList<Coordinate> coordinates = new ArrayList<>();
     
     ArrayList<Integer> dfs_num = new ArrayList<Integer>();
-    
-    
+    Vector<Boolean> taken = new Vector<Boolean>();
+    PriorityQueue<TripletaArista> pq = new PriorityQueue<TripletaArista>();
     
     public Grafo(int numNodos, int numAristas, boolean dirigido) {
         this.numNodos = numNodos;
@@ -47,6 +48,21 @@ public class Grafo {
         (adjList.get(nodo1)).add(new Pair( nodo2, weight ));
         // solo en el caso de que el grafo sea no dirigido se agrega v-u
         if(!dirigido && nodo1 != nodo2) (adjList.get(nodo2)).add( new Pair(nodo1, weight));
+        this.numAristas++;
+    }
+    public void deleteArista(int nodo1, int nodo2, double weight, boolean flag){
+        if(!checkArista(nodo1, nodo2)) return;
+        ArrayList<Pair> listaNodo1 = adjList.get(nodo1);
+        
+        for(int i = 0; i < listaNodo1.size(); i++){
+            Pair p = listaNodo1.get(i);
+            if(  p.getId() == nodo2 ) {
+                adjList.get(nodo1).remove(i);
+                if(flag) this.numAristas--;        
+            }
+        }
+        if(!dirigido && nodo1 != nodo2) this.deleteArista(nodo2, nodo1, weight, false);
+
         
     }
     
@@ -54,15 +70,13 @@ public class Grafo {
     Este metodo revisa si existe una arista entre el nodo1 y nodo2
     retorna true si existe, false en caso contrario 
     */
-    public boolean checkArista(int nodo1, int nodo2 ){
-        
-        ArrayList<Pair> listaNodo1 = adjList.get(nodo1);
-        
-        for(int i = 0; i < listaNodo1.size(); i++){
-            Pair p = listaNodo1.get(i);
-            if(  p.getId() == nodo2 ) return true;
+    public boolean checkArista(int nodo1, int nodo2 ){        
+        for(int i = 0; i < adjList.get(nodo1).size(); i++){
+            Pair p = adjList.get(nodo1).get(i);
+            int v = p.getId();
+            if(v == nodo2 ) return true;
         }
-        return false;
+        return false;        
     }
     
      /*
@@ -124,21 +138,23 @@ public class Grafo {
     Metodo de generacion de grafo genErdosRenyi
     */
     public static Grafo genErdosRenyi(int n, int m, boolean dirigido, boolean auto){
-        Grafo g = new Grafo(n,m, dirigido);
+        
+        Grafo g = new Grafo(n,0, dirigido);
+        
         /*
         genero aleatoriamente indices de nodos u y v 
         revisando que no exista previamente u-v y tambien si el grafo permite ciclos
         el ciclo termina cuando tenga las m aristas
-        */
-        int contador = 0;
+        */       
+        int contador = 0;        
         while( contador < m ){
             int u,v;
             u = g.getRandomNum(n);
-            v = g.getRandomNum(n);
+            v = g.getRandomNum(n);            
             if(u == v && !auto) continue;
-            if(g.checkArista(u, v) )  continue;
+            if(g.checkArista(u, v)) continue;            
             g.addArista(u, v, 0 );
-            contador++;
+            contador++;            
         }
         
         return g;
@@ -279,6 +295,17 @@ public class Grafo {
         }   
     }
     
+    public void DFS(int u){
+        dfs_num.set(u, VISITED);
+        for(int j = 0; j <  adjList.get(u).size(); j++){
+                int v = adjList.get(u).get(j).getId();
+                if(dfs_num.get(v) == UNVISITED){                    
+                    DFS(v);
+                }
+        }   
+    }
+    
+    
     public Grafo DFS_TREE_I(int u ){
         int n = adjList.size();
         Grafo g = new Grafo(n,0,false);
@@ -381,6 +408,164 @@ public class Grafo {
         
         return g;
     }
+    
+    
+    public int countComponents() {
+        
+        int numComponents = 0;
+        
+        for(int u=0;u < adjList.size();u++){ // i es u
+            if(dfs_num.get(u) == UNVISITED){
+                numComponents++;
+                DFS(u);
+            }
+
+        }
+        dfs_num.clear();
+        for(int i = 0; i < numNodos; i++) dfs_num.add(UNVISITED);
+
+        return numComponents;
+    }
+    
+    Grafo Kruskal_D() { 
+        int n = adjList.size();
+        Grafo g = new Grafo(n,0,false);
+        UnionFind UF = new UnionFind(n); //n - numero de vertices
+        
+        Vector<TripletaArista> EdgeList = new Vector<TripletaArista>();
+        
+        double w; int u, v;
+        double mst_cost = 0;
+        
+        for(int i=0;i<adjList.size();i++){ // i es u
+            u = i;
+            for(int j=0;j<adjList.get(i).size();j++){
+                Pair p = adjList.get(i).get(j); 
+                v = p.getId();
+                w = p.getWeight();
+                //System.out.println("u:" + u + " v:" + v + " w:" + w);
+                EdgeList.add(new TripletaArista(w, u, v));
+            }
+            
+        }
+        
+        Collections.sort(EdgeList);
+        
+        
+        
+        
+        int E = EdgeList.size();
+        //System.out.println("E: " + E);
+        
+        for(int i = 0; i < E; i++){
+            TripletaArista front = EdgeList.get(i);
+            if(!UF.isSameSet(front.Second, front.Third)){
+                
+                mst_cost += front.First;
+                UF.unionSet(front.Second, front.Third);
+                u = front.Second;
+                v = front.Third;
+                w = front.First;
+                //System.out.println("agregando " +"u:" + u + " v:" + v + " w:" + w);
+                g.addArista(u, v, w);
+            }
+        }
+        System.out.println("MST COST Kruskal_D = " + mst_cost);
+        return g;
+    }
+    
+    
+    
+    Grafo Kruskal_I() { 
+        int n = adjList.size();
+        Grafo g = new Grafo(n,0,false);
+     
+        
+        Vector<TripletaArista> EdgeList = new Vector<TripletaArista>();
+        
+        double w; int u, v;        
+        double mst_cost = 0;
+        
+        for(int i=0;i<adjList.size();i++){ // i es u
+            u = i;
+            for(int j=0;j<adjList.get(i).size();j++){
+                Pair p = adjList.get(i).get(j); 
+                v = p.getId();
+                w = p.getWeight();
+                if(g.checkArista(u, v)) continue;            
+                g.addArista(u, v, w );
+                
+                EdgeList.add(new TripletaArista(w, u, v));
+                
+                mst_cost += w;
+            }
+            
+        }
+        
+        Collections.sort(EdgeList);
+        
+        
+        
+        int E = EdgeList.size();
+        
+        int numCompBefore = g.countComponents();
+        int numCompAfter;
+        
+        for(int i = E - 1; i >= 0; i--){
+            TripletaArista front = EdgeList.get(i);
+            u = front.Second;
+            v = front.Third;
+            w = front.First;
+            
+            g.deleteArista(u, v, w ,true);
+            mst_cost -= w;
+            
+            numCompAfter = g.countComponents();
+            if(numCompAfter != numCompBefore){
+                g.addArista(u, v, w);
+                mst_cost += w;
+            }
+           
+        }
+        System.out.println("MST COST Kruskal_I = " + mst_cost);
+        
+        
+        return g;
+    }
+    private void processNodePrim(int i) {
+        taken.set(i, true);
+        for (int j = 0; j < this.adjList.get(i).size(); j++) {
+            Pair p = this.adjList.get(i).get(j);
+            if(!taken.get(p.getId()))
+            pq.offer( new TripletaArista( p.getWeight(), i ,p.getId() ) );
+        }
+    }
+
+    Grafo Prim() { 
+        int n = adjList.size();
+        Grafo g = new Grafo(n,0,false);
+        double mst_cost;
+        
+        int u,v; double w;
+        for (int i = 0; i < n; i++) taken.add(false);                // no vertex is taken at the beginning
+        
+        processNodePrim(0);   // take vertex 0 and process all edges incident to vertex 0
+        mst_cost = 0;
+        while (!pq.isEmpty()) { // repeat until V vertices (E=V-1 edges) are taken
+          TripletaArista front = pq.peek(); pq.poll();
+          u = front.getSecond(); v = front.getThird();  w = front.getFirst();// no need to negate id/weight
+          if (!taken.get(v)) {           // we have not connected this vertex yet
+            mst_cost += w;
+            g.addArista(u, v, w);
+            
+            processNodePrim(v); // take u, process all edges incident to u
+          }
+        }                                        // each edge is in pq only once!
+        System.out.printf("MST cost (Prim's)\n" + mst_cost);
+        
+        taken.clear();
+        return g;
+    }
 
     
     
@@ -393,7 +578,7 @@ public class Grafo {
         try(Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nameFile +".csv"), "UTF-8")))
         {   
             
-            writer.write("source;target;weight\n");
+            writer.write("source;target;label\n");
             
             for(int i = 0 ; i < adjList.size(); i++){
                 for(int j = 0; j < adjList.get(i).size(); j++){
@@ -461,5 +646,8 @@ public class Grafo {
             ex.printStackTrace();
         }
     }
+
+     
+   
 
 }

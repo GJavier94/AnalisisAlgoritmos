@@ -208,6 +208,160 @@ public class BibliotecaGrafos {
         g = g4[2].Dijkstra(g4[2].nodes.get(0));
         g.exportGraphUnWeighted("genGilbert500_Dijkstra");
         */
+        
+//-------------------------------Proyecto 4----------------------------------------------------------
+        
+        Grafo g1[] = new Grafo[3];
+        g1[0] = Grafo.genBarabasiAlbert(30, 12 , false, false);
+        g1[1] = Grafo.genBarabasiAlbert(100, 12 , false, false);
+        g1[2] = Grafo.genBarabasiAlbert(500, 15 , false, false);
+        
+        for(int i = 0; i < g1.length; i++) g1[i].RandomEdgeValues(1, 100);
+        
+        
+        g1[0].exportGraphWeighted("genBarabasiAlbert30");        
+        g1[1].exportGraphWeighted("genBarabasiAlbert100");        
+        g1[2].exportGraphWeighted("genBarabasiAlbert500");
+        
+        Grafo g;
+        g = g1[0].Kruskal_D();
+        g.exportGraphWeighted("genBarabasiAlbert30_Kruskal_D");
+        g = g1[0].Kruskal_I();
+        g.exportGraphWeighted("genBarabasiAlbert30_Kruskal_I");
+        g = g1[0].Prim();
+        g.exportGraphWeighted("genBarabasiAlbert30_Prim");
+        
+        g = g1[1].Kruskal_D();
+        g.exportGraphWeighted("genBarabasiAlbert100_Kruskal_D");
+        g = g1[1].Kruskal_I();
+        g.exportGraphWeighted("genBarabasiAlbert100_Kruskal_I");
+        g = g1[1].Prim();
+        g.exportGraphWeighted("genBarabasiAlbert100_Prim");
+        
+        g = g1[2].Kruskal_D();
+        g.exportGraphWeighted("genBarabasiAlbert500_Kruskal_D");
+        g = g1[2].Kruskal_I();
+        g.exportGraphWeighted("genBarabasiAlbert500_Kruskal_I");
+        g = g1[2].Prim();
+        g.exportGraphWeighted("genBarabasiAlbert500_Prim");
+        
+        
+        
+        
+        
+        Grafo g2[] = new Grafo[3];
+        g2[0] = Grafo.genErdosRenyi(30, 50, false, false);
+        g2[1] = Grafo.genErdosRenyi(100, 250, false, false);
+        g2[2] = Grafo.genErdosRenyi(500, 800, false, false);
+        
+        for(int i = 0; i < g2.length; i++) g2[i].RandomEdgeValues(1, 100);
+        
+        g2[0].exportGraphWeighted("genErdosRenyi30");        
+        g2[1].exportGraphWeighted("genErdosRenyi100");        
+        g2[2].exportGraphWeighted("genErdosRenyi500");
+        
+        
+        
+        g = g2[0].Kruskal_D();
+        g.exportGraphWeighted("genErdosRenyi30_Kruskal_D");
+        g = g2[0].Kruskal_I();
+        g.exportGraphWeighted("genErdosRenyi30_Kruskal_I");
+        g = g2[0].Prim();
+        g.exportGraphWeighted("genErdosRenyi30_Prim");
+        
+        g = g2[1].Kruskal_D();
+        g.exportGraphWeighted("genErdosRenyi100_Kruskal_D");
+        g = g2[1].Kruskal_I();
+        g.exportGraphWeighted("genErdosRenyi100_Kruskal_I");
+        g = g2[1].Prim();
+        g.exportGraphWeighted("genErdosRenyi100_Prim");
+        
+        g = g2[2].Kruskal_D();
+        g.exportGraphWeighted("genErdosRenyi500_Kruskal_D");
+        g = g2[2].Kruskal_I();
+        g.exportGraphWeighted("genErdosRenyi500_Kruskal_I");
+        g = g2[2].Prim();
+        g.exportGraphWeighted("genErdosRenyi500_Prim");
+        
+        
+        
+        Grafo g3[] = new Grafo[3];
+        g3[0] = Grafo.genGeografico(30,  0.2, false, false);
+        g3[1] = Grafo.genGeografico(100, 0.2, false, false);
+        g3[2] = Grafo.genGeografico(500, 0.1, false, false);
+        
+        for(int i = 0; i < g3.length; i++) g3[i].RandomEdgeValues(1, 100);
+       
+        g3[0].exportGraphWeighted("genGeografico30");        
+        g3[1].exportGraphWeighted("genGeografico100");
+        g3[2].exportGraphWeighted("genGeografico500");        
+        
+        
+        
+        g = g3[0].Kruskal_D();
+        g.exportGraphWeighted("genGeografico30_Kruskal_D");
+        g = g3[0].Kruskal_I();
+        g.exportGraphWeighted("genGeografico30_Kruskal_I");
+        g = g3[0].Prim();
+        g.exportGraphWeighted("genGeografico30_Prim");
+        
+        
+        g = g3[1].Kruskal_D();
+        g.exportGraphWeighted("genGeografico100_Kruskal_D");
+        g = g3[1].Kruskal_I();
+        g.exportGraphWeighted("genGeografico100_Kruskal_I");
+        g = g3[1].Prim();
+        g.exportGraphWeighted("genGeografico100_Prim");
+        
+        
+        
+        g = g3[2].Kruskal_D();
+        g.exportGraphWeighted("genGeografico500_Kruskal_D");
+        g = g3[2].Kruskal_I();
+        g.exportGraphWeighted("genGeografico500_Kruskal_I");
+        g = g3[2].Prim();
+        g.exportGraphWeighted("genGeografico500_Prim");
+        
+    
+        Grafo g4[] = new Grafo[3];
+        g4[0] = Grafo.genGilbert(30,  0.3, false, false);
+        g4[1] = Grafo.genGilbert(100, 0.3, false, false);
+        g4[2] = Grafo.genGilbert(500, 0.09, false, false);
+        
+        for(int i = 0; i < g4.length; i++) g4[i].RandomEdgeValues(1, 100);
+       
+        g4[0].exportGraphWeighted("genGilbert30");        
+        g4[1].exportGraphWeighted("genGilbert100");        
+        g4[2].exportGraphWeighted("genGilbert500");
+       
+        
+        
+        g = g4[0].Kruskal_D();
+        g.exportGraphWeighted("genGilbert30_Kruskal_D");
+        g = g4[0].Kruskal_I();
+        g.exportGraphWeighted("genGilbert30_Kruskal_I");
+        g = g4[0].Prim();
+        g.exportGraphWeighted("genGilbert30_Prim");
+        
+        
+        g = g4[1].Kruskal_D();
+        g.exportGraphWeighted("genGilbert100_Kruskal_D");
+        g = g4[1].Kruskal_I();
+        g.exportGraphWeighted("genGilbert100_Kruskal_I");
+        g = g4[1].Prim();
+        g.exportGraphWeighted("genGilbert100_Prim");
+        
+        
+        
+        g = g4[2].Kruskal_D();
+        g.exportGraphWeighted("genGilbert500_Kruskal_D");
+        g = g4[2].Kruskal_I();
+        g.exportGraphWeighted("genGilbert500_Kruskal_I");
+        g = g4[2].Prim();
+        g.exportGraphWeighted("genGilbert500_Prim");
+        
+        
+        
     }
     
 }
